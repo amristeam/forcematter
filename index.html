@@ -1,0 +1,917 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Force and Matter Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a left rail with the five syllabus topics, one working column on the right.
+   Lab-bench calm: cool blue-greys, one steel-blue accent, orange reserved for force vectors. */
+:root{
+  --bg:#F1F5F8; --surface:#FFFFFF; --surface-2:#E6EDF2; --ink:#10212C; --ink-2:#465B69;
+  --line:#C9D5DD; --grid:#DCE5EB; --accent:#0A6B8D; --accent-ink:#FFFFFF; --force:#C4540A;
+  --good:#1B7A4B; --good-bg:#E1F2E8; --bad:#B3261E; --bad-bg:#FBE6E4; --warn:#8F5F00; --liquid:#4FA3C7;
+  --f-display:'Bricolage Grotesque',system-ui,sans-serif;
+  --f-body:'IBM Plex Sans',system-ui,sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1A22; --surface:#142630; --surface-2:#1B3340; --ink:#E6EEF2; --ink-2:#9DB2BF;
+    --line:#2B4553; --grid:#21394A; --accent:#4FB8DA; --accent-ink:#06222D; --force:#F08A3E;
+    --good:#5CC796; --good-bg:#16352A; --bad:#FF8A80; --bad-bg:#3A1C1A; --warn:#E5B454; --liquid:#3E8FB5;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1A22; --surface:#142630; --surface-2:#1B3340; --ink:#E6EEF2; --ink-2:#9DB2BF;
+  --line:#2B4553; --grid:#21394A; --accent:#4FB8DA; --accent-ink:#06222D; --force:#F08A3E;
+  --good:#5CC796; --good-bg:#16352A; --bad:#FF8A80; --bad-bg:#3A1C1A; --warn:#E5B454; --liquid:#3E8FB5;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--f-body);-webkit-text-size-adjust:100%}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15;letter-spacing:-.01em}
+sub,sup{line-height:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.top{display:flex;gap:24px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;padding-bottom:24px;border-bottom:1px solid var(--line)}
+.top>div:first-child{min-width:0;flex:1 1 420px}
+.eyebrow{margin:0 0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-size:clamp(1.9rem,4.5vw,2.8rem);font-weight:700}
+.lede{margin:10px 0 0;max-width:62ch;color:var(--ink-2)}
+.overall{flex:0 1 250px;min-width:200px}
+.ov-row{display:flex;justify-content:space-between;font-size:.82rem;color:var(--ink-2);margin-bottom:6px}
+.score{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+.meter{height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+
+.app{display:grid;grid-template-columns:268px minmax(0,1fr);gap:36px;margin-top:26px;align-items:start}
+aside{position:sticky;top:env(safe-area-inset-top,0px);min-width:0;display:grid;gap:18px}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav button{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:baseline;text-align:left;padding:10px 12px;border:1px solid transparent;border-radius:6px;background:transparent;cursor:pointer;color:var(--ink)}
+.nav button:hover{background:var(--surface-2)}
+.nav button[aria-current="true"]{background:var(--surface);border-color:var(--line);font-weight:600}
+.nav .n{font-family:var(--f-mono);font-size:.78rem;color:var(--ink-2)}
+.nav .c{font-family:var(--f-mono);font-size:.76rem;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.eqs{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:10px 14px}
+.eqs summary{cursor:pointer;font-weight:600;font-size:.88rem}
+.eqs ul{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px;font-family:var(--f-mono);font-size:.8rem}
+.eqs li span{display:block;font-family:var(--f-body);font-size:.72rem;color:var(--ink-2)}
+@media (max-width:900px){
+  .app{grid-template-columns:minmax(0,1fr);gap:20px}
+  aside{position:static}
+  .nav{flex-direction:row;overflow-x:auto;padding-bottom:4px}
+  .nav button{min-width:170px;flex:0 0 auto}
+}
+
+main{min-width:0}
+main:focus{outline:none}
+.t-head{display:grid;gap:6px;margin-bottom:18px}
+.t-head h2{font-size:clamp(1.5rem,3.2vw,2.1rem);font-weight:700}
+.syl{margin:0;color:var(--ink-2);font-size:.88rem;max-width:70ch}
+.tabs{display:inline-flex;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);padding:3px;gap:2px;margin-bottom:24px;max-width:100%;overflow-x:auto}
+.tabs button{border:0;background:transparent;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:500;color:var(--ink-2);white-space:nowrap}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+
+.prose{max-width:70ch}
+.prose h3{font-size:1.25rem;margin:28px 0 8px}
+.prose h3:first-child{margin-top:0}
+.prose p{margin:0 0 12px}
+.prose ul,.prose ol{margin:0 0 14px;padding-left:1.25rem}
+.prose li{margin-bottom:4px}
+.eq{display:block;margin:12px 0;padding:10px 14px;background:var(--surface-2);border-radius:6px;font-family:var(--f-mono);font-size:.95rem;overflow-x:auto;white-space:nowrap}
+.term{font-weight:600}
+.callout{margin:16px 0;padding:12px 16px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.callout .lab{display:block;margin-bottom:4px;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;font-weight:600;color:var(--warn)}
+.callout.def .lab{color:var(--accent)}
+.worked{margin:18px 0;padding:14px 18px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.worked h4{font-size:1rem;margin-bottom:8px}
+.worked ol{margin:0;padding-left:1.2rem}
+.scroll{overflow-x:auto;max-width:100%}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;font-variant-numeric:tabular-nums}
+th{font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
+td.m,th.m{font-family:var(--f-mono)}
+
+.sim{display:grid;grid-template-columns:minmax(240px,310px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:780px){.sim{grid-template-columns:minmax(0,1fr)}}
+.controls{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:grid;gap:14px;min-width:0}
+.controls label{display:grid;gap:6px;font-size:.84rem;color:var(--ink-2);font-weight:500}
+.controls .lr{display:flex;justify-content:space-between;gap:8px}
+.controls output{font-family:var(--f-mono);color:var(--ink);font-variant-numeric:tabular-nums}
+select,input[type=number],textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:8px 14px;border:1px solid var(--line);border-radius:6px;background:var(--surface);cursor:pointer;font-weight:500}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.55;cursor:default}
+.readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px}
+.ro{background:var(--surface-2);padding:8px 10px;border-radius:6px;min-width:0}
+.ro span{display:block;font-size:.72rem;color:var(--ink-2)}
+.ro b{display:block;font-family:var(--f-mono);font-size:.98rem;font-weight:500;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.try{font-size:.84rem;color:var(--ink-2);border-top:1px solid var(--line);padding-top:12px}
+.try b{color:var(--ink)}
+.try ul{margin:6px 0 0;padding-left:1.1rem}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px;min-width:0}
+.stage svg{display:block;width:100%;height:auto}
+.two{display:grid;grid-template-columns:minmax(0,.55fr) minmax(0,1fr);gap:8px;align-items:center}
+@media (max-width:560px){.two{grid-template-columns:minmax(0,1fr)}}
+.stack{display:grid;gap:14px;min-width:0}
+.calc{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:grid;gap:12px;min-width:0}
+.calc h4{font-size:1rem}
+.numrow{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
+.numrow label{display:grid;gap:4px;font-size:.8rem;color:var(--ink-2);flex:1 1 90px;min-width:0}
+svg text{font-family:var(--f-mono);font-size:11px;fill:var(--ink-2)}
+svg text.tk{fill:var(--ink)}
+svg text.fc{fill:var(--force);font-weight:500}
+svg text.ac{fill:var(--accent);font-weight:500}
+
+.qhead{display:flex;gap:14px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.qhead p{margin:0;color:var(--ink-2);font-size:.9rem;max-width:60ch}
+.q{border-top:1px solid var(--line);padding:20px 0;display:grid;gap:12px;max-width:760px}
+.qmeta{font-family:var(--f-mono);font-size:.74rem;color:var(--ink-2)}
+.qtext{margin:0;font-weight:500}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:var(--surface);cursor:pointer}
+.opt:hover:not(:disabled){background:var(--surface-2)}
+.opt.ok{border-color:var(--good);background:var(--good-bg)}
+.opt.no{border-color:var(--bad);background:var(--bad-bg)}
+.numrow.q-in{align-items:center}
+.numrow.q-in input{width:140px;flex:0 0 auto;font-family:var(--f-mono)}
+.numrow.q-in .u{font-family:var(--f-mono);color:var(--ink-2)}
+textarea{min-height:84px;resize:vertical}
+.fb{font-size:.92rem;font-weight:500;margin:0}
+.fb.good{color:var(--good)}
+.fb.bad{color:var(--bad)}
+.why{background:var(--surface-2);padding:12px 16px;border-radius:6px;font-size:.92rem}
+.why p{margin:0 0 6px}
+.why p:last-child{margin:0}
+.foot{margin:40px 0 0;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-2);font-size:.82rem;max-width:80ch}
+@media (prefers-reduced-motion:reduce){.meter i{transition:none}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="eyebrow">Cambridge International AS &amp; A Level Physics · 9702</p>
+      <h1>Force and Matter Lab</h1>
+      <p class="lede">How solids deform and how pressure arises. Every topic has concise notes, a simulation you can change, and exam-style questions with worked answers.</p>
+    </div>
+    <div class="overall">
+      <div class="ov-row"><span>Questions answered correctly</span><b class="score" id="ovScore">0 / 25</b></div>
+      <div class="meter"><i id="ovBar"></i></div>
+    </div>
+  </header>
+  <div class="app">
+    <aside>
+      <nav class="nav" id="nav" aria-label="Topics"></nav>
+      <details class="eqs" id="eqs">
+        <summary>Key equations</summary>
+        <ul>
+          <li>W = mg<span>weight, g = 9.81 N kg<sup>−1</sup></span></li>
+          <li>F = kx<span>Hooke's law, k in N m<sup>−1</sup></span></li>
+          <li>E = ½Fx = ½kx²<span>elastic energy, within the limit</span></li>
+          <li>1/k = 1/k₁ + 1/k₂<span>springs in series</span></li>
+          <li>k = k₁ + k₂<span>springs in parallel</span></li>
+          <li>σ = F/A, ε = x/L<span>stress and strain</span></li>
+          <li>p = F/A<span>pressure, Pa = N m<sup>−2</sup></span></li>
+          <li>p = ρgh<span>pressure due to a liquid column</span></li>
+          <li>1 cm² = 10<sup>−4</sup> m²<span>area conversion</span></li>
+        </ul>
+      </details>
+    </aside>
+    <main id="main" tabindex="-1"></main>
+  </div>
+  <p class="foot">Calculations use g = 9.81 N kg<sup>−1</sup> and atmospheric pressure 1.01 × 10<sup>5</sup> Pa. Written for classroom revision of the Cambridge AS &amp; A Level Physics topics on forces, deformation of solids and pressure. Check wording of definitions against the current syllabus document before assessment.</p>
+</div>
+<script>
+"use strict";
+const G = 9.81, PATM = 1.01e5;
+const $ = (s, r = document) => r.querySelector(s);
+const sims = {};
+
+function sci(v, n = 3) {
+  if (!isFinite(v) || v === 0) return '0';
+  const a = Math.abs(v);
+  if (a >= 1e6 || a < 1e-2) {
+    const e = Math.floor(Math.log10(a));
+    return (v / Math.pow(10, e)).toFixed(n - 1) + ' × 10<sup>' + e + '</sup>';
+  }
+  return Number(v.toPrecision(n)).toString();
+}
+function fmtP(p) {
+  if (p >= 1e6) return (p / 1e6).toPrecision(3) + ' MPa';
+  if (p >= 1e3) return (p / 1e3).toPrecision(3) + ' kPa';
+  return p.toPrecision(3) + ' Pa';
+}
+function arrow(x1, y1, x2, y2, col, w = 3) {
+  const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L, h = 9;
+  const bx = x2 - ux * h, by = y2 - uy * h;
+  return `<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" style="stroke:${col};stroke-width:${w}"/>` +
+    `<polygon points="${x2},${y2} ${bx - uy * 5},${by + ux * 5} ${bx + uy * 5},${by - ux * 5}" style="fill:${col}"/>`;
+}
+function niceStep(max) {
+  const raw = max / 5, p = Math.pow(10, Math.floor(Math.log10(raw))), r = raw / p;
+  return (r < 1.5 ? 1 : r < 3.5 ? 2 : r < 7.5 ? 5 : 10) * p;
+}
+function ro(label, id) { return `<div class="ro"><span>${label}</span><b id="${id}">–</b></div>`; }
+
+const TOPICS = [
+/* ---------------------------------------------------------------- 1 */
+{
+  id: 't1', title: 'Forces acting on solids', short: 'Forces on solids',
+  syl: 'Types of force that deform a solid, elastic and plastic behaviour, stress and strain. Links to Cambridge 9702 Topic 6 (Deformation of solids).',
+  learn: `
+<h3>Forces change the shape of solids</h3>
+<p>A force can change the motion of an object or change its shape. A solid keeps its shape because its atoms are held in place by electrostatic bonds. When a force is applied, the atoms are pushed slightly out of their equilibrium separation, and the bonds pull or push them back. This internal response is what we observe as the solid resisting the deformation.</p>
+<h3>Three basic deformations</h3>
+<ul>
+<li><span class="term">Tension</span>: two equal and opposite forces pull the ends away from each other. The solid becomes longer and thinner (cables, wires, fishing line).</li>
+<li><span class="term">Compression</span>: two equal and opposite forces push the ends towards each other. The solid becomes shorter and wider (pillars, bones, a spring being squashed).</li>
+<li><span class="term">Shear</span>: equal and opposite forces act parallel to opposite faces. Layers slide over each other (scissors cutting paper, a rivet joining plates).</li>
+</ul>
+<p>Bending and twisting (torsion) are combinations of these: the outside of a bent beam is in tension while the inside is in compression.</p>
+<div class="callout def"><span class="lab">Definitions</span>
+<p><span class="term">Elastic deformation</span>: the material returns to its original shape and size when the force is removed.</p>
+<p style="margin:0"><span class="term">Plastic deformation</span>: the material does not return to its original shape and size when the force is removed. Some deformation is permanent.</p></div>
+<div class="callout"><span class="lab">Common error</span>
+<p style="margin:0">“Elastic” describes recovery, not how easily something stretches. Rubber stretches a lot but is elastic only up to a limit, and a steel spring is perfectly elastic over its working range even though it stretches very little.</p></div>
+<h3>Stress and strain</h3>
+<p>The same force acting on a thin wire and on a thick rod deforms them differently. Stress and strain remove the effect of the sample size.</p>
+<span class="eq">stress σ = F / A  (Pa)</span>
+<span class="eq">strain ε = x / L  (no unit)</span>
+<p>Here F is the force, A the cross-sectional area perpendicular to the force, x the extension and L the original length. Within the limit of proportionality the ratio σ/ε is constant for a given material (the Young modulus).</p>
+<div class="worked"><h4>Worked example: tensile stress</h4>
+<p>A steel wire of diameter 0.50 mm carries a tension of 120 N. Calculate the stress.</p>
+<ol>
+<li>Area A = π r² = π × (0.25 × 10<sup>−3</sup> m)² = 1.96 × 10<sup>−7</sup> m².</li>
+<li>σ = F / A = 120 N ÷ 1.96 × 10<sup>−7</sup> m² = 6.1 × 10<sup>8</sup> Pa.</li>
+</ol></div>
+<p>Use the simulation tab to apply tension, compression and shear to three different materials and watch which one keeps a permanent change in shape.</p>`,
+  q: [
+    { id: 'q1-1', type: 'mcq', text: 'A rubber band is stretched and then released. It returns to its original length. This behaviour is described as',
+      opts: ['elastic deformation', 'plastic deformation', 'brittle fracture', 'shear'], ans: 0,
+      why: '<p>The band recovers its original length when the force is removed, which is the definition of elastic deformation.</p>' },
+    { id: 'q1-2', type: 'mcq', text: 'Two equal forces act along the axis of a rod. They point towards each other and act on opposite ends. The rod is in',
+      opts: ['tension', 'compression', 'shear', 'torsion'], ans: 1,
+      why: '<p>Forces pushing inwards on the ends shorten the rod: this is compression. Tension would need the forces pointing away from each other. Shear needs forces parallel to opposite faces.</p>' },
+    { id: 'q1-3', type: 'num', text: 'A steel wire of cross-sectional area 2.0 × 10<sup>−6</sup> m² carries a tension of 400 N. Calculate the tensile stress in the wire.',
+      unit: 'MPa', ans: 200, tol: 0.02,
+      why: '<p>σ = F / A = 400 ÷ 2.0 × 10<sup>−6</sup> = 2.0 × 10<sup>8</sup> Pa = 200 MPa.</p>' },
+    { id: 'q1-4', type: 'num', text: 'A rod of original length 2.50 m extends by 1.0 mm under a load. Calculate the strain. Give your answer in units of 10<sup>−4</sup>.',
+      unit: '× 10⁻⁴', ans: 4.0, tol: 0.02,
+      why: '<p>ε = x / L = 1.0 × 10<sup>−3</sup> m ÷ 2.50 m = 4.0 × 10<sup>−4</sup>. Strain has no unit because it is a ratio of two lengths.</p>' },
+    { id: 'q1-5', type: 'open', marks: 2, text: 'Distinguish between elastic deformation and plastic deformation of a solid.',
+      model: '<p>Elastic: the solid returns to its original shape and size when the force is removed (1 mark).</p><p>Plastic: the solid stays permanently deformed, it does not return to its original shape and size when the force is removed (1 mark).</p>' }
+  ]
+},
+/* ---------------------------------------------------------------- 2 */
+{
+  id: 't2', title: 'Stretching springs', short: 'Stretching springs',
+  syl: 'Hooke’s law, extension against total length, and how to find the spring constant from measurements. Links to Cambridge 9702 Topic 6.',
+  learn: `
+<h3>Hooke's law</h3>
+<div class="callout def"><span class="lab">Definition</span>
+<p style="margin:0">Hooke's law states that the extension of a spring is directly proportional to the force applied, provided the limit of proportionality is not exceeded.</p></div>
+<span class="eq">F = k x</span>
+<ul>
+<li><span class="term">F</span> is the force applied along the spring, in newtons. For a hanging mass, F = mg.</li>
+<li><span class="term">x</span> is the <em>extension</em>: new length minus natural length, in metres.</li>
+<li><span class="term">k</span> is the spring constant (stiffness), in N m<sup>−1</sup>. A large k means a stiff spring.</li>
+</ul>
+<div class="callout"><span class="lab">Common error</span>
+<p style="margin:0">Using the total length of the spring as x. If a spring of natural length 20.0 cm is 26.0 cm long under load, then x = 6.0 cm, not 26.0 cm. Convert to metres before using k in N m<sup>−1</sup>.</p></div>
+<h3>Measuring k in the laboratory</h3>
+<ol>
+<li>Hang the spring from a clamp beside a vertical metre rule and record its natural length.</li>
+<li>Add a mass in equal steps. For each mass, record the new length and calculate F = mg and x.</li>
+<li>Plot F (vertical) against x (horizontal). Draw the best-fit straight line through the origin.</li>
+<li>The gradient is k. If you plot x against F instead, the gradient is 1/k.</li>
+</ol>
+<p>Take readings at eye level to avoid parallax error. Use a pointer or marker on the lowest coil. Repeat with unloading to check that the spring has not been taken past its limit.</p>
+<div class="worked"><h4>Worked example</h4>
+<p>A spring of natural length 20.0 cm reaches 26.0 cm when a 0.30 kg mass hangs from it. Find k.</p>
+<ol>
+<li>F = mg = 0.30 × 9.81 = 2.94 N.</li>
+<li>x = 26.0 − 20.0 = 6.0 cm = 0.060 m.</li>
+<li>k = F / x = 2.94 ÷ 0.060 = 49 N m<sup>−1</sup>.</li>
+</ol></div>
+<p>In the simulation you can hang masses on three different springs, record readings into a table and see the best-fit line appear on the graph.</p>`,
+  q: [
+    { id: 'q2-1', type: 'num', text: 'A spring has spring constant 40 N m<sup>−1</sup>. A mass of 0.25 kg hangs from it at rest. Calculate the extension in cm. Use g = 9.81 N kg<sup>−1</sup>.',
+      unit: 'cm', ans: 6.13, tol: 0.02,
+      why: '<p>F = mg = 0.25 × 9.81 = 2.45 N. x = F / k = 2.45 ÷ 40 = 0.0613 m = 6.1 cm.</p>' },
+    { id: 'q2-2', type: 'num', text: 'A force of 6.0 N produces an extension of 12 cm in a spring that obeys Hooke\'s law. Calculate the spring constant.',
+      unit: 'N m⁻¹', ans: 50, tol: 0.02,
+      why: '<p>k = F / x = 6.0 ÷ 0.12 = 50 N m<sup>−1</sup>. The extension must be converted from cm to m first.</p>' },
+    { id: 'q2-3', type: 'num', text: 'A spring has spring constant 25 N m<sup>−1</sup>. Calculate the force needed to extend it by 8.0 cm.',
+      unit: 'N', ans: 2.0, tol: 0.02,
+      why: '<p>F = kx = 25 × 0.080 = 2.0 N.</p>' },
+    { id: 'q2-4', type: 'mcq', text: 'A spring obeys Hooke\'s law. A graph of force (vertical axis) against extension (horizontal axis) is',
+      opts: ['a straight line through the origin with gradient k', 'a curve that gets steeper as extension increases', 'a straight line with a positive intercept on the force axis', 'a straight line through the origin with gradient 1/k'], ans: 0,
+      why: '<p>F = kx has the form y = mx, so the graph is a straight line through the origin. The gradient F/x equals k. A gradient of 1/k would be found if extension were plotted against force.</p>' },
+    { id: 'q2-5', type: 'num', text: 'A spring is 30.0 cm long under a load of 4.0 N and 34.0 cm long under a load of 6.0 N. Both loads are within the limit of proportionality. Calculate the natural length of the spring.',
+      unit: 'cm', ans: 22.0, tol: 0.02,
+      why: '<p>The extra 2.0 N causes an extra extension of 4.0 cm, so k = 2.0 ÷ 0.040 = 50 N m<sup>−1</sup>.</p><p>At 4.0 N, x = 4.0 ÷ 50 = 0.080 m = 8.0 cm. Natural length = 30.0 − 8.0 = 22.0 cm.</p>' }
+  ]
+},
+/* ---------------------------------------------------------------- 3 */
+{
+  id: 't3', title: 'Limit of proportionality and the spring constant', short: 'Limit and spring constant',
+  syl: 'Force–extension graphs, limit of proportionality, elastic limit, strain energy, and combinations of springs. Links to Cambridge 9702 Topic 6.',
+  learn: `
+<h3>Reading a force–extension graph</h3>
+<p>If you keep increasing the load on a spring or a metal wire, the graph of force against extension changes shape.</p>
+<ul>
+<li><span class="term">Straight section from the origin</span>: Hooke's law holds, F = kx, and the gradient is the spring constant k.</li>
+<li><span class="term">Limit of proportionality (P)</span>: the point beyond which extension is no longer directly proportional to force. The graph starts to curve.</li>
+<li><span class="term">Elastic limit (E)</span>: the maximum force beyond which the material does not return to its original length when the force is removed. Beyond E there is a permanent (plastic) extension.</li>
+<li><span class="term">Plastic region</span>: a small extra force gives a large extension.</li>
+</ul>
+<div class="callout"><span class="lab">Common error</span>
+<p style="margin:0">The limit of proportionality and the elastic limit are different ideas. They are often close together for metals, but P comes first. Between P and E the material still recovers fully, even though F is no longer proportional to x.</p></div>
+<p>When a load beyond the elastic limit is removed, the unloading line is roughly parallel to the initial straight section and ends on the extension axis at the permanent extension.</p>
+<h3>Energy stored in a stretched spring</h3>
+<p>The work done in stretching equals the area under the force–extension graph. Within the limit of proportionality the area is a triangle.</p>
+<span class="eq">E = ½ F x = ½ k x²</span>
+<h3>Springs in series and in parallel</h3>
+<ul>
+<li><span class="term">Series</span>: the same force passes through both springs and the extensions add. The combination is softer than either spring.</li>
+</ul>
+<span class="eq">1/k = 1/k₁ + 1/k₂</span>
+<ul>
+<li><span class="term">Parallel</span>: the springs have the same extension and the forces add. The combination is stiffer.</li>
+</ul>
+<span class="eq">k = k₁ + k₂</span>
+<div class="worked"><h4>Worked example</h4>
+<p>Two springs of 30 N m<sup>−1</sup> and 60 N m<sup>−1</sup> are joined end to end and a 6.0 N force is applied. Find the total extension.</p>
+<ol>
+<li>Series: 1/k = 1/30 + 1/60 = 3/60, so k = 20 N m<sup>−1</sup>.</li>
+<li>x = F / k = 6.0 ÷ 20 = 0.30 m = 30 cm.</li>
+</ol></div>
+<p>In the simulation, load the spring past P and E, then unload it and read off the permanent extension.</p>`,
+  q: [
+    { id: 'q3-1', type: 'mcq', text: 'The limit of proportionality of a spring is the point beyond which',
+      opts: ['the extension is no longer directly proportional to the force', 'the spring breaks', 'the spring constant increases', 'the spring has gained a permanent extension'], ans: 0,
+      why: '<p>The limit of proportionality is defined by the loss of direct proportionality between force and extension. A permanent extension marks the elastic limit, which does not have to coincide with it.</p>' },
+    { id: 'q3-2', type: 'mcq', text: 'A student loads a wire and records these readings. Force / N: 0, 2, 4, 6, 8, 10, 12, 14. Extension / mm: 0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.5, 9.0. The limit of proportionality is at about',
+      opts: ['8 N', '10 N', '12 N', '14 N'], ans: 1,
+      why: '<p>Up to 10 N each extra 2 N adds 1.0 mm, so F ∝ x. From 10 N to 12 N the extension grows by 1.5 mm, which breaks the pattern. The limit of proportionality is therefore at about 10 N.</p>' },
+    { id: 'q3-3', type: 'num', text: 'Two springs of spring constant 30 N m<sup>−1</sup> and 60 N m<sup>−1</sup> are connected side by side (in parallel) and share a load of 4.5 N. Calculate the extension in cm.',
+      unit: 'cm', ans: 5.0, tol: 0.02,
+      why: '<p>Parallel: k = 30 + 60 = 90 N m<sup>−1</sup>. x = F / k = 4.5 ÷ 90 = 0.050 m = 5.0 cm.</p>' },
+    { id: 'q3-4', type: 'num', text: 'A spring of spring constant 80 N m<sup>−1</sup> is extended by 5.0 cm, within its limit of proportionality. Calculate the elastic potential energy stored.',
+      unit: 'J', ans: 0.10, tol: 0.02,
+      why: '<p>E = ½kx² = ½ × 80 × (0.050)² = 0.10 J.</p>' },
+    { id: 'q3-5', type: 'open', marks: 3, text: 'A spring is stretched beyond its elastic limit and then the force is removed. Describe what is observed and how this would appear on a force–extension graph.',
+      model: '<p>The spring does not return to its original length, it has a permanent (plastic) extension (1 mark).</p><p>The unloading line is roughly parallel to the initial straight part of the loading graph (1 mark).</p><p>The unloading line meets the extension axis at a positive value, equal to the permanent extension, instead of returning to the origin (1 mark).</p>' }
+  ]
+},
+/* ---------------------------------------------------------------- 4 */
+{
+  id: 't4', title: 'Pressure', short: 'Pressure',
+  syl: 'Definition of pressure, pressure in liquids and the equation p = ρgh. Links to Cambridge 9702 Topic 4 (Forces, density and pressure).',
+  learn: `
+<h3>What pressure measures</h3>
+<div class="callout def"><span class="lab">Definition</span>
+<p style="margin:0">Pressure is the normal force acting per unit cross-sectional area.</p></div>
+<span class="eq">p = F / A</span>
+<p>The SI unit is the pascal: 1 Pa = 1 N m<sup>−2</sup>. In base units this is kg m<sup>−1</sup> s<sup>−2</sup>. Pressure is a scalar: it has magnitude but no direction of its own. The force it produces on a surface always acts at right angles (normal) to that surface.</p>
+<h3>Pressure in a liquid</h3>
+<p>A liquid at rest exerts pressure on the walls of its container and on any object in it. At a given point the pressure acts equally in all directions.</p>
+<p>Consider a column of liquid of height h and cross-sectional area A:</p>
+<ol>
+<li>Volume V = A h, so mass m = ρ A h.</li>
+<li>Weight of the column W = m g = ρ A h g.</li>
+<li>Pressure on the base p = W / A = ρ g h.</li>
+</ol>
+<span class="eq">p = ρ g h</span>
+<ul>
+<li>Pressure increases linearly with depth. It depends on the density ρ, g and the vertical depth h.</li>
+<li>It does <em>not</em> depend on the shape of the container or the amount of liquid sideways. Points at the same depth in the same connected liquid are at the same pressure.</li>
+<li>For a difference in depth Δh, the pressure difference is Δp = ρ g Δh.</li>
+<li>Pressure at depth h below an open surface: total p = p<sub>atm</sub> + ρ g h, where p<sub>atm</sub> ≈ 1.01 × 10<sup>5</sup> Pa.</li>
+</ul>
+<div class="callout"><span class="lab">Common error</span>
+<p style="margin:0">Using the length of a sloping tube instead of the vertical depth. Only the vertical distance below the surface matters in p = ρgh.</p></div>
+<div class="worked"><h4>Worked example</h4>
+<p>Find the pressure due to the water at the bottom of a 3.0 m deep swimming pool, and the total pressure there. Water density 1000 kg m<sup>−3</sup>.</p>
+<ol>
+<li>p = ρgh = 1000 × 9.81 × 3.0 = 2.9 × 10<sup>4</sup> Pa.</li>
+<li>Total = 2.94 × 10<sup>4</sup> + 1.01 × 10<sup>5</sup> = 1.3 × 10<sup>5</sup> Pa.</li>
+</ol></div>
+<p>Use the simulation to change the liquid and depth, and watch how the pressure line on the graph changes slope.</p>`,
+  q: [
+    { id: 'q4-1', type: 'mcq', text: 'Which expresses the pascal in SI base units?',
+      opts: ['kg m s<sup>−2</sup>', 'kg m<sup>−1</sup> s<sup>−2</sup>', 'kg m<sup>2</sup> s<sup>−2</sup>', 'kg m<sup>−2</sup> s<sup>−2</sup>'], ans: 1,
+      why: '<p>Pa = N m<sup>−2</sup>. Since N = kg m s<sup>−2</sup>, then Pa = kg m s<sup>−2</sup> ÷ m² = kg m<sup>−1</sup> s<sup>−2</sup>.</p>' },
+    { id: 'q4-2', type: 'num', text: 'Calculate the pressure due to the water at a depth of 12 m. Density of water = 1000 kg m<sup>−3</sup>. Ignore atmospheric pressure.',
+      unit: 'kPa', ans: 117.7, tol: 0.015,
+      why: '<p>p = ρgh = 1000 × 9.81 × 12 = 1.18 × 10<sup>5</sup> Pa = 118 kPa.</p>' },
+    { id: 'q4-3', type: 'num', text: 'A tank is filled to a depth of 0.80 m with oil of density 800 kg m<sup>−3</sup>. Calculate the pressure difference between the top surface and the bottom of the tank.',
+      unit: 'kPa', ans: 6.28, tol: 0.02,
+      why: '<p>Δp = ρgΔh = 800 × 9.81 × 0.80 = 6.3 × 10<sup>3</sup> Pa = 6.3 kPa.</p>' },
+    { id: 'q4-4', type: 'mcq', text: 'The wall of a dam is made thicker at the bottom than at the top. The main reason is that',
+      opts: ['the pressure of the water increases with depth', 'the water is denser at the bottom', 'the volume of water is larger at the bottom', 'atmospheric pressure is larger at the bottom'], ans: 0,
+      why: '<p>p = ρgh. A greater depth gives a greater pressure and therefore a greater force per unit area on the wall. Water is almost incompressible, so its density barely changes with depth.</p>' },
+    { id: 'q4-5', type: 'num', text: 'At what depth in sea water (density 1030 kg m<sup>−3</sup>) is the pressure due to the water equal to 2.0 × 10<sup>5</sup> Pa?',
+      unit: 'm', ans: 19.8, tol: 0.02,
+      why: '<p>h = p / (ρg) = 2.0 × 10<sup>5</sup> ÷ (1030 × 9.81) = 19.8 m.</p>' }
+  ]
+},
+/* ---------------------------------------------------------------- 5 */
+{
+  id: 't5', title: 'Calculating pressure', short: 'Calculating pressure',
+  syl: 'Using p = F/A with weight, area conversions and p = ρgh in multi-step problems. Links to Cambridge 9702 Topic 4.',
+  learn: `
+<h3>A routine for pressure problems</h3>
+<ol>
+<li>Find the force that acts <em>perpendicular</em> to the surface. For an object resting on a horizontal surface this is its weight, W = mg.</li>
+<li>Find the area in contact, in m². Convert units first: 1 cm² = 10<sup>−4</sup> m² and 1 m² = 10<sup>4</sup> cm².</li>
+<li>Apply p = F / A. Rearrange if needed: F = pA and A = F / p.</li>
+</ol>
+<p>Same force on a smaller area gives a larger pressure. This is why knives are sharpened, nails have points, skis and snowshoes are wide, and tractors use wide tracks.</p>
+<div class="callout"><span class="lab">Common error</span>
+<p style="margin:0">Converting cm² to m² by dividing by 100. A square metre is 100 cm × 100 cm = 10 000 cm², so divide by 10 000.</p></div>
+<h3>Combining with liquid pressure</h3>
+<p>The force from a liquid on a <em>horizontal</em> surface at constant depth is F = pA = ρ g h A. On a vertical wall the pressure changes with depth, so the force is found from the average pressure.</p>
+<h3>Typical values</h3>
+<div class="scroll"><table>
+<thead><tr><th>Situation</th><th class="m">Force</th><th class="m">Area</th><th class="m">Pressure</th></tr></thead>
+<tbody>
+<tr><td>60 kg person standing on both feet</td><td class="m">589 N</td><td class="m">0.040 m²</td><td class="m">14.7 kPa</td></tr>
+<tr><td>55 kg person on one stiletto heel</td><td class="m">540 N</td><td class="m">1.0 cm²</td><td class="m">5.4 MPa</td></tr>
+<tr><td>Atmosphere at sea level</td><td class="m">–</td><td class="m">–</td><td class="m">101 kPa</td></tr>
+</tbody></table></div>
+<div class="worked"><h4>Worked example</h4>
+<p>A brick of mass 2.0 kg measures 20 cm × 10 cm × 5.0 cm. Find the pressure when it rests on its largest face.</p>
+<ol>
+<li>W = mg = 2.0 × 9.81 = 19.6 N.</li>
+<li>A = 0.20 × 0.10 = 0.020 m².</li>
+<li>p = W / A = 19.6 ÷ 0.020 = 9.8 × 10<sup>2</sup> Pa.</li>
+</ol>
+<p style="margin:8px 0 0">Resting on its smallest face (0.10 m × 0.050 m = 0.0050 m²) the pressure is four times larger, 3.9 kPa.</p></div>
+<p>The simulation lets you change the brick dimensions, mass and resting face, and compares the pressure on all three faces.</p>`,
+  q: [
+    { id: 'q5-1', type: 'num', text: 'A crate weighing 600 N rests on a floor. The face in contact with the floor has an area of 0.30 m². Calculate the pressure on the floor.',
+      unit: 'kPa', ans: 2.0, tol: 0.02,
+      why: '<p>p = F / A = 600 ÷ 0.30 = 2000 Pa = 2.0 kPa.</p>' },
+    { id: 'q5-2', type: 'num', text: 'A person of mass 60 kg stands on both feet. The area of each shoe in contact with the ground is 0.020 m². Calculate the pressure on the ground.',
+      unit: 'kPa', ans: 14.7, tol: 0.02,
+      why: '<p>F = mg = 60 × 9.81 = 589 N. Total area = 2 × 0.020 = 0.040 m². p = 589 ÷ 0.040 = 1.47 × 10<sup>4</sup> Pa = 14.7 kPa.</p>' },
+    { id: 'q5-3', type: 'num', text: 'A woman of mass 55 kg balances on one stiletto heel of area 1.0 cm². Calculate the pressure under the heel.',
+      unit: 'MPa', ans: 5.4, tol: 0.02,
+      why: '<p>F = 55 × 9.81 = 540 N. A = 1.0 cm² = 1.0 × 10<sup>−4</sup> m². p = 540 ÷ 1.0 × 10<sup>−4</sup> = 5.4 × 10<sup>6</sup> Pa = 5.4 MPa.</p>' },
+    { id: 'q5-4', type: 'num', text: 'A brick of mass 2.0 kg has dimensions 20 cm × 10 cm × 5.0 cm. Calculate the pressure it exerts when it rests on its smallest face.',
+      unit: 'kPa', ans: 3.92, tol: 0.02,
+      why: '<p>W = 2.0 × 9.81 = 19.6 N. Smallest face: 0.10 m × 0.050 m = 5.0 × 10<sup>−3</sup> m². p = 19.6 ÷ 5.0 × 10<sup>−3</sup> = 3.9 × 10<sup>3</sup> Pa = 3.9 kPa.</p>' },
+    { id: 'q5-5', type: 'num', text: 'A rectangular tank has a horizontal base of 2.0 m × 1.5 m. It is filled with water to a depth of 0.80 m. Calculate the force exerted by the water on the base. Density of water = 1000 kg m<sup>−3</sup>.',
+      unit: 'kN', ans: 23.5, tol: 0.02,
+      why: '<p>p = ρgh = 1000 × 9.81 × 0.80 = 7848 Pa.</p><p>A = 2.0 × 1.5 = 3.0 m². F = pA = 7848 × 3.0 = 2.35 × 10<sup>4</sup> N = 23.5 kN.</p><p>Check: this equals the weight of the water, 1000 × (3.0 × 0.80) × 9.81 = 23.5 kN.</p>' }
+  ]
+}
+];
+</script>
+<script>
+/* ---------------- Simulation 1: forces acting on solids ---------------- */
+sims.t1 = function (root) {
+  const MATS = {
+    steel: { soft: 0.0012, yield: 90, plastic: 0.002 },
+    rubber: { soft: 0.0045, yield: 100, plastic: 0 },
+    plast: { soft: 0.0016, yield: 8, plastic: 0.0055 }
+  };
+  const st = { mode: 'tension', mat: 'steel', F: 30, maxF: 30 };
+  let timer = null;
+  root.innerHTML = `<div class="sim"><div class="controls">
+    <label>Type of force<select id="s1mode"><option value="tension">Tension (stretching)</option><option value="compression">Compression (squashing)</option><option value="shear">Shear (sliding layers)</option></select></label>
+    <label>Material<select id="s1mat"><option value="steel">Steel bar</option><option value="rubber">Rubber block</option><option value="plast">Plasticine</option></select></label>
+    <label><span class="lr"><span>Applied force F (model units, kN)</span><output id="s1Fo">30</output></span><input type="range" id="s1F" min="0" max="100" step="1" value="30"></label>
+    <div class="btnrow"><button class="btn primary" id="s1rel">Remove force</button><button class="btn" id="s1reset">New sample</button></div>
+    <div class="readouts">${ro('Deformation', 'r1d')}${ro('Permanent change', 'r1p')}</div>
+    <div class="ro"><span>Behaviour</span><b id="r1s" style="font-family:var(--f-body);font-size:.9rem"></b></div>
+    <div class="try"><b>Try this</b><ul><li>Load plasticine to 40, then remove the force.</li><li>Do the same to rubber and steel. Which recover fully?</li><li>Switch to shear and compare the shape change.</li></ul></div>
+  </div><div class="stage"><svg id="s1svg" viewBox="0 0 520 300" role="img" aria-label="Sample of material under a force"></svg></div></div>`;
+  const F = $('#s1F', root);
+  function dOf(f, maxF, m) {
+    const dmax = m.soft * Math.min(maxF, m.yield) + m.plastic * Math.max(0, maxF - m.yield);
+    if (f >= maxF) return dmax;
+    return Math.max(0, dmax - m.soft * (maxF - f));
+  }
+  function draw() {
+    const m = MATS[st.mat], d = dOf(st.F, st.maxF, m), perm = dOf(0, st.maxF, m);
+    const cx = 260, cy = 140, L0 = 220, H0 = 60, col = 'var(--force)', len = 16 + st.F * 0.6;
+    const fill = st.mat === 'steel' ? 'var(--ink-2)' : st.mat === 'rubber' ? 'var(--accent)' : 'var(--liquid)';
+    let g = '', cap = '';
+    if (st.mode === 'tension') {
+      const L = L0 * (1 + d), H = H0 * (1 - 0.35 * d);
+      g += `<rect x="${cx - L0 / 2}" y="${cy - H0 / 2}" width="${L0}" height="${H0}" style="fill:none;stroke:var(--ink-2);stroke-dasharray:5 4"/>`;
+      g += `<rect x="${cx - L / 2}" y="${cy - H / 2}" width="${L}" height="${H}" rx="3" style="fill:${fill};fill-opacity:.55;stroke:var(--ink);stroke-width:1.5"/>`;
+      if (st.F > 0) g += arrow(cx + L / 2, cy, cx + L / 2 + len, cy, col) + arrow(cx - L / 2, cy, cx - L / 2 - len, cy, col) +
+        `<text class="fc" x="${cx + L / 2 + len + 6}" y="${cy + 4}">F</text><text class="fc" x="${cx - L / 2 - len - 14}" y="${cy + 4}">F</text>`;
+      cap = 'Tension: the bar becomes longer and thinner';
+    } else if (st.mode === 'compression') {
+      const L = L0 * (1 - d), H = H0 * (1 + 0.35 * d);
+      g += `<rect x="${cx - L0 / 2}" y="${cy - H0 / 2}" width="${L0}" height="${H0}" style="fill:none;stroke:var(--ink-2);stroke-dasharray:5 4"/>`;
+      g += `<rect x="${cx - L / 2}" y="${cy - H / 2}" width="${L}" height="${H}" rx="3" style="fill:${fill};fill-opacity:.55;stroke:var(--ink);stroke-width:1.5"/>`;
+      if (st.F > 0) g += arrow(cx - L / 2 - len, cy, cx - L / 2, cy, col) + arrow(cx + L / 2 + len, cy, cx + L / 2, cy, col) +
+        `<text class="fc" x="${cx - L / 2 - len - 14}" y="${cy + 4}">F</text><text class="fc" x="${cx + L / 2 + len + 6}" y="${cy + 4}">F</text>`;
+      cap = 'Compression: the bar becomes shorter and wider';
+    } else {
+      const W0 = 200, s = d * H0 * 2.5, yb = cy + H0 / 2, yt = cy - H0 / 2;
+      g += `<rect x="${cx - W0 / 2}" y="${yt}" width="${W0}" height="${H0}" style="fill:none;stroke:var(--ink-2);stroke-dasharray:5 4"/>`;
+      g += `<polygon points="${cx - W0 / 2},${yb} ${cx + W0 / 2},${yb} ${cx + W0 / 2 + s},${yt} ${cx - W0 / 2 + s},${yt}" style="fill:${fill};fill-opacity:.55;stroke:var(--ink);stroke-width:1.5"/>`;
+      if (st.F > 0) g += arrow(cx - 50 + s, yt - 14, cx - 50 + s + len, yt - 14, col) + arrow(cx + 50, yb + 14, cx + 50 - len, yb + 14, col) +
+        `<text class="fc" x="${cx - 50 + s + len + 6}" y="${yt - 10}">F</text><text class="fc" x="${cx + 50 - len - 14}" y="${yb + 18}">F</text>`;
+      cap = 'Shear: equal and opposite forces slide the layers';
+    }
+    g += `<text class="tk" x="260" y="268" text-anchor="middle">${cap}</text>`;
+    g += `<text x="260" y="286" text-anchor="middle">dashed outline = original shape</text>`;
+    $('#s1svg', root).innerHTML = g;
+    $('#r1d', root).textContent = (d * 100).toFixed(1) + ' %';
+    $('#r1p', root).textContent = (perm * 100).toFixed(1) + ' %';
+    $('#r1s', root).textContent = perm * 100 < 0.05 ? 'Elastic so far: it returns to its original shape when the force is removed.' : 'Plastic deformation has occurred: part of the change is permanent.';
+    $('#s1Fo', root).textContent = Math.round(st.F);
+  }
+  F.addEventListener('input', () => { clearInterval(timer); st.F = +F.value; if (st.F > st.maxF) st.maxF = st.F; draw(); });
+  $('#s1mode', root).addEventListener('change', e => { st.mode = e.target.value; draw(); });
+  $('#s1mat', root).addEventListener('change', e => { st.mat = e.target.value; st.maxF = st.F; draw(); });
+  $('#s1rel', root).addEventListener('click', () => {
+    clearInterval(timer);
+    timer = setInterval(() => { st.F = Math.max(0, st.F - 2); F.value = st.F; draw(); if (st.F <= 0) clearInterval(timer); }, 16);
+  });
+  $('#s1reset', root).addEventListener('click', () => { clearInterval(timer); st.F = 0; st.maxF = 0; F.value = 0; draw(); });
+  draw();
+};
+
+/* ---------------- Simulation 2: stretching springs ---------------- */
+sims.t2 = function (root) {
+  const st = { k: 40, m: 200, rows: [] }, S = 6, NAT = 15;
+  root.innerHTML = `<div class="stack"><div class="sim"><div class="controls">
+    <label>Spring<select id="s2k"><option value="20">Spring A (soft)</option><option value="40" selected>Spring B (medium)</option><option value="80">Spring C (stiff)</option></select></label>
+    <label><span class="lr"><span>Hanging mass m</span><output id="s2mo">200 g</output></span><input type="range" id="s2m" min="0" max="500" step="10" value="200"></label>
+    <div class="btnrow"><button class="btn primary" id="s2rec">Record reading</button><button class="btn" id="s2clr">Clear table</button></div>
+    <div class="readouts">${ro('Force F = mg', 'r2f')}${ro('Extension x', 'r2x')}${ro('Fitted k from graph', 'r2k')}</div>
+    <div class="try"><b>Try this</b><ul><li>Record five readings for Spring B at different masses.</li><li>Check that F ÷ x is constant in the table.</li><li>Compare the fitted gradient with the spring's k. Then try Spring A.</li></ul></div>
+  </div><div class="stage"><div class="two"><svg id="s2sp" viewBox="0 0 220 340" role="img" aria-label="Spring hanging with a mass beside a ruler"></svg><svg id="s2gr" viewBox="0 0 360 300" role="img" aria-label="Graph of force against extension"></svg></div></div></div>
+  <div class="scroll stage"><table><thead><tr><th class="m">m / g</th><th class="m">F / N</th><th class="m">x / cm</th><th class="m">F ÷ x / N m<sup>−1</sup></th></tr></thead><tbody id="s2tb"></tbody></table></div></div>`;
+  const xcm = () => (st.m / 1000 * G) / st.k * 100;
+  function spring() {
+    const x = xcm(), y0 = 30, yE = y0 + (NAT + x) * S, cx = 90, N = 12;
+    let pts = `${cx},${y0} ${cx},${y0 + 8}`;
+    const a = y0 + 8, b = yE - 8;
+    for (let i = 1; i <= 2 * N; i++) pts += ` ${cx + (i % 2 ? 16 : -16)},${(a + (b - a) * (i - 0.5) / (2 * N)).toFixed(1)}`;
+    pts += ` ${cx},${b} ${cx},${yE}`;
+    let g = `<rect x="40" y="18" width="100" height="10" style="fill:var(--ink-2)"/>`;
+    g += `<polyline points="${pts}" style="fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round"/>`;
+    const bh = 22 + st.m * 0.04;
+    g += `<line x1="${cx}" y1="${yE}" x2="${cx}" y2="${yE + 10}" style="stroke:var(--ink);stroke-width:2"/>`;
+    g += `<rect x="${cx - 26}" y="${yE + 10}" width="52" height="${bh}" rx="3" style="fill:var(--accent);fill-opacity:.35;stroke:var(--accent);stroke-width:1.5"/>`;
+    g += `<text class="tk" x="${cx}" y="${yE + 10 + bh / 2 + 4}" text-anchor="middle">${st.m} g</text>`;
+    const rx = 168, z = y0 + NAT * S;
+    g += `<line x1="${rx}" y1="${z}" x2="${rx}" y2="${z + 30 * S}" style="stroke:var(--ink-2);stroke-width:1.5"/>`;
+    for (let c = 0; c <= 30; c++) {
+      const y = z + c * S, big = c % 5 === 0;
+      g += `<line x1="${rx}" y1="${y}" x2="${rx - (big ? 9 : 5)}" y2="${y}" style="stroke:var(--ink-2)"/>`;
+      if (big) g += `<text x="${rx + 5}" y="${y + 4}">${c}</text>`;
+    }
+    g += `<text x="${rx - 6}" y="${z - 8}" text-anchor="end">cm</text>`;
+    g += `<line x1="${cx + 18}" y1="${yE}" x2="${rx}" y2="${yE}" style="stroke:var(--force);stroke-width:1.5;stroke-dasharray:4 3"/>`;
+    g += `<text class="fc" x="${cx + 22}" y="${yE - 6}">x = ${x.toFixed(1)} cm</text>`;
+    $('#s2sp', root).innerHTML = g;
+  }
+  function graph() {
+    const l = 50, r = 14, t = 14, b = 44, W = 360 - l - r, H = 300 - t - b, XM = 30, YM = 5;
+    const X = v => l + v / XM * W, Y = v => t + H - v / YM * H;
+    let g = '';
+    for (let i = 0; i <= 6; i++) { g += `<line x1="${X(i * 5)}" y1="${t}" x2="${X(i * 5)}" y2="${t + H}" style="stroke:var(--grid)"/><text x="${X(i * 5)}" y="${t + H + 15}" text-anchor="middle">${i * 5}</text>`; }
+    for (let i = 0; i <= 5; i++) { g += `<line x1="${l}" y1="${Y(i)}" x2="${l + W}" y2="${Y(i)}" style="stroke:var(--grid)"/><text x="${l - 7}" y="${Y(i) + 4}" text-anchor="end">${i}</text>`; }
+    g += `<line x1="${l}" y1="${t}" x2="${l}" y2="${t + H}" style="stroke:var(--ink-2)"/><line x1="${l}" y1="${t + H}" x2="${l + W}" y2="${t + H}" style="stroke:var(--ink-2)"/>`;
+    g += `<text class="tk" x="${l + W / 2}" y="${t + H + 36}" text-anchor="middle">Extension x / cm</text>`;
+    g += `<text class="tk" transform="translate(13 ${t + H / 2}) rotate(-90)" text-anchor="middle">Force F / N</text>`;
+    let sxy = 0, sxx = 0;
+    st.rows.forEach(rw => { sxy += rw.F * rw.x; sxx += rw.x * rw.x; });
+    let kfit = null;
+    if (sxx > 0) {
+      const sl = sxy / sxx, xe = Math.min(XM, YM / sl);
+      kfit = sl * 100;
+      g += `<line x1="${X(0)}" y1="${Y(0)}" x2="${X(xe)}" y2="${Y(sl * xe)}" style="stroke:var(--accent);stroke-width:2"/>`;
+    }
+    st.rows.forEach(rw => { g += `<circle cx="${X(rw.x)}" cy="${Y(rw.F)}" r="4.5" style="fill:var(--force)"/>`; });
+    const F = st.m / 1000 * G;
+    g += `<circle cx="${X(xcm())}" cy="${Y(F)}" r="6" style="fill:none;stroke:var(--ink);stroke-width:1.5"/>`;
+    $('#s2gr', root).innerHTML = g;
+    $('#r2k', root).innerHTML = kfit ? kfit.toFixed(1) + ' N m<sup>−1</sup>' : '–';
+  }
+  function table() {
+    $('#s2tb', root).innerHTML = st.rows.length ? st.rows.map(rw => `<tr><td class="m">${rw.m}</td><td class="m">${rw.F.toFixed(2)}</td><td class="m">${rw.x.toFixed(1)}</td><td class="m">${rw.x > 0 ? (rw.F / rw.x * 100).toFixed(1) : '–'}</td></tr>`).join('')
+      : '<tr><td colspan="4" style="color:var(--ink-2)">No readings yet. Choose a mass and press Record reading.</td></tr>';
+  }
+  function update() {
+    const F = st.m / 1000 * G;
+    $('#s2mo', root).textContent = st.m + ' g';
+    $('#r2f', root).textContent = F.toFixed(2) + ' N';
+    $('#r2x', root).textContent = xcm().toFixed(1) + ' cm';
+    spring(); graph(); table();
+  }
+  $('#s2k', root).addEventListener('change', e => { st.k = +e.target.value; st.rows = []; update(); });
+  $('#s2m', root).addEventListener('input', e => { st.m = +e.target.value; update(); });
+  $('#s2rec', root).addEventListener('click', () => {
+    if (st.rows.length >= 12) st.rows.shift();
+    st.rows.push({ m: st.m, F: st.m / 1000 * G, x: xcm() }); update();
+  });
+  $('#s2clr', root).addEventListener('click', () => { st.rows = []; update(); });
+  st.rows = [100, 200, 300, 400].map(m => ({ m, F: m / 1000 * G, x: (m / 1000 * G) / st.k * 100 }));
+  update();
+};
+
+/* ---------------- Simulation 3: limit of proportionality ---------------- */
+sims.t3 = function (root) {
+  const PRE = {
+    A: { n: 'Spring A', k: 50, Fp: 10, Fe: 11, Fmax: 16 },
+    B: { n: 'Spring B', k: 200, Fp: 40, Fe: 44, Fmax: 60 },
+    C: { n: 'Metal wire', k: 1000, Fp: 60, Fe: 65, Fmax: 90 }
+  };
+  const st = { p: PRE.A, F: 6, maxF: 6 };
+  let timer = null;
+  root.innerHTML = `<div class="stack"><div class="sim"><div class="controls">
+    <label>Sample<select id="s3p"><option value="A">Spring A (k = 50 N/m)</option><option value="B">Spring B (k = 200 N/m)</option><option value="C">Metal wire (k = 1000 N/m)</option></select></label>
+    <label><span class="lr"><span>Force F</span><output id="s3Fo"></output></span><input type="range" id="s3F" min="0" max="16" step="0.1" value="6"></label>
+    <div class="btnrow"><button class="btn primary" id="s3un">Unload to zero</button><button class="btn" id="s3rs">New sample</button></div>
+    <div class="readouts">${ro('Extension x', 'r3x')}${ro('F ÷ x', 'r3r')}${ro('Permanent extension', 'r3p')}${ro('Work done loading', 'r3w')}</div>
+    <div class="ro"><span>Region</span><b id="r3g" style="font-family:var(--f-body);font-size:.9rem"></b></div>
+    <div class="try"><b>Try this</b><ul><li>Increase F slowly and watch F ÷ x. Where does it stop being constant?</li><li>Go past E, then press Unload. Note the permanent extension.</li><li>Compare the unloading line with the first straight section.</li></ul></div>
+  </div><div class="stage"><svg id="s3svg" viewBox="0 0 460 340" role="img" aria-label="Force-extension graph with limit of proportionality and elastic limit"></svg></div></div>
+  <div class="calc"><h4>Combining two springs</h4>
+    <div class="numrow"><label>k₁ (N/m)<input type="number" id="ck1" value="30" min="1" step="1"></label><label>k₂ (N/m)<input type="number" id="ck2" value="60" min="1" step="1"></label><label>Force F (N)<input type="number" id="cF" value="6" min="0" step="0.5"></label></div>
+    <div class="readouts">${ro('Series k', 'cks')}${ro('Series extension', 'cxs')}${ro('Parallel k', 'ckp')}${ro('Parallel extension', 'cxp')}</div></div></div>`;
+  const Fs = $('#s3F', root);
+  const s1 = p => 1 / p.k, s2 = p => 1 / (0.8 * p.k), s3 = p => 1 / (0.25 * p.k);
+  function Lx(f, p) {
+    if (f <= p.Fp) return f * s1(p);
+    if (f <= p.Fe) return p.Fp * s1(p) + (f - p.Fp) * s2(p);
+    return p.Fp * s1(p) + (p.Fe - p.Fp) * s2(p) + (f - p.Fe) * s3(p);
+  }
+  const xOf = (f, mx, p) => (mx <= p.Fe || f >= mx) ? Lx(f, p) : Lx(mx, p) - (mx - f) / p.k;
+  function work(f, p) {
+    const a = Math.min(f, p.Fp), b = Math.min(Math.max(f, p.Fp), p.Fe), c = Math.max(f, p.Fe);
+    return s1(p) * a * a / 2 + s2(p) * (b * b - p.Fp * p.Fp) / 2 + s3(p) * (c * c - p.Fe * p.Fe) / 2;
+  }
+  function draw() {
+    const p = st.p, l = 56, r = 18, t = 16, b = 50, W = 460 - l - r, H = 340 - t - b;
+    const XM = Lx(p.Fmax, p) * 100 * 1.06, YM = p.Fmax * 1.06;
+    const X = v => l + v / XM * W, Y = v => t + H - v / YM * H;
+    let g = '';
+    g += `<rect x="${l}" y="${Y(p.Fp)}" width="${W}" height="${Y(0) - Y(p.Fp)}" style="fill:var(--surface-2)"/>`;
+    g += `<rect x="${l}" y="${Y(p.Fe)}" width="${W}" height="${Y(p.Fp) - Y(p.Fe)}" style="fill:var(--grid)"/>`;
+    const sx = niceStep(XM), sy = niceStep(YM);
+    for (let v = 0; v <= XM; v += sx) g += `<line x1="${X(v)}" y1="${t}" x2="${X(v)}" y2="${t + H}" style="stroke:var(--grid)"/><text x="${X(v)}" y="${t + H + 15}" text-anchor="middle">${+v.toFixed(2)}</text>`;
+    for (let v = 0; v <= YM; v += sy) g += `<line x1="${l}" y1="${Y(v)}" x2="${l + W}" y2="${Y(v)}" style="stroke:var(--grid)"/><text x="${l - 7}" y="${Y(v) + 4}" text-anchor="end">${+v.toFixed(2)}</text>`;
+    g += `<line x1="${l}" y1="${t}" x2="${l}" y2="${t + H}" style="stroke:var(--ink-2)"/><line x1="${l}" y1="${t + H}" x2="${l + W}" y2="${t + H}" style="stroke:var(--ink-2)"/>`;
+    g += `<text class="tk" x="${l + W / 2}" y="${t + H + 38}" text-anchor="middle">Extension x / cm</text>`;
+    g += `<text class="tk" transform="translate(13 ${t + H / 2}) rotate(-90)" text-anchor="middle">Force F / N</text>`;
+    g += `<text x="${l + W - 6}" y="${Y(p.Fp / 2) + 4}" text-anchor="end">Hooke's law region</text>`;
+    g += `<text x="${l + W - 6}" y="${Y(p.Fmax * 0.7) + 4}" text-anchor="end">plastic region</text>`;
+    // extrapolated Hooke line
+    const xh = Math.min(XM, p.Fmax * 1.06 / p.k * 100);
+    g += `<line x1="${X(0)}" y1="${Y(0)}" x2="${X(xh)}" y2="${Y(xh / 100 * p.k)}" style="stroke:var(--ink-2);stroke-dasharray:3 4"/>`;
+    // loading curve
+    let d = '';
+    for (let i = 0; i <= 90; i++) { const f = p.Fmax * i / 90; d += (i ? 'L' : 'M') + X(Lx(f, p) * 100).toFixed(1) + ' ' + Y(f).toFixed(1); }
+    g += `<path d="${d}" style="fill:none;stroke:var(--accent);stroke-width:2.5"/>`;
+    // unloading line
+    if (st.maxF > p.Fe) {
+      const xm = Lx(st.maxF, p), xp = xm - st.maxF / p.k;
+      g += `<line x1="${X(xm * 100)}" y1="${Y(st.maxF)}" x2="${X(xp * 100)}" y2="${Y(0)}" style="stroke:var(--force);stroke-width:2;stroke-dasharray:6 4"/>`;
+      g += `<circle cx="${X(xp * 100)}" cy="${Y(0)}" r="4" style="fill:var(--force)"/>`;
+    }
+    g += `<circle cx="${X(Lx(p.Fp, p) * 100)}" cy="${Y(p.Fp)}" r="4.5" style="fill:var(--surface);stroke:var(--ink);stroke-width:1.5"/><text class="tk" x="${X(Lx(p.Fp, p) * 100) - 8}" y="${Y(p.Fp) - 8}" text-anchor="end">P</text>`;
+    g += `<circle cx="${X(Lx(p.Fe, p) * 100)}" cy="${Y(p.Fe)}" r="4.5" style="fill:var(--surface);stroke:var(--ink);stroke-width:1.5"/><text class="tk" x="${X(Lx(p.Fe, p) * 100) + 9}" y="${Y(p.Fe) + 14}">E</text>`;
+    const x = xOf(st.F, st.maxF, p);
+    g += `<circle cx="${X(x * 100)}" cy="${Y(st.F)}" r="6.5" style="fill:var(--force);stroke:var(--surface);stroke-width:2"/>`;
+    g += `<text x="${l + 8}" y="${t + 14}">P limit of proportionality · E elastic limit</text>`;
+    $('#s3svg', root).innerHTML = g;
+    const perm = st.maxF > p.Fe ? Lx(st.maxF, p) - st.maxF / p.k : 0;
+    $('#s3Fo', root).textContent = st.F.toFixed(1) + ' N';
+    $('#r3x', root).textContent = (x * 100).toFixed(1) + ' cm';
+    $('#r3r', root).innerHTML = st.F > 0 ? (st.F / x).toFixed(0) + ' N m<sup>−1</sup>' : '–';
+    $('#r3p', root).textContent = (perm * 100).toFixed(1) + ' cm';
+    $('#r3w', root).textContent = work(st.maxF, p).toFixed(2) + ' J';
+    const reg = st.maxF > p.Fe ? (st.F < st.maxF ? 'Unloading after plastic deformation' : 'Plastic region: the sample will not fully recover') : st.maxF > p.Fp ? 'Elastic but no longer proportional' : 'Hooke\'s law region: F ∝ x, F ÷ x = k';
+    $('#r3g', root).textContent = reg;
+  }
+  function setPreset(key) {
+    clearInterval(timer);
+    st.p = PRE[key]; st.F = st.p.Fmax * 0.375; st.maxF = st.F;
+    Fs.max = st.p.Fmax; Fs.value = st.F; draw();
+  }
+  Fs.addEventListener('input', () => { clearInterval(timer); st.F = +Fs.value; if (st.F > st.maxF) st.maxF = st.F; draw(); });
+  $('#s3p', root).addEventListener('change', e => setPreset(e.target.value));
+  $('#s3un', root).addEventListener('click', () => {
+    clearInterval(timer);
+    timer = setInterval(() => { st.F = Math.max(0, st.F - st.p.Fmax / 80); Fs.value = st.F; draw(); if (st.F <= 0) clearInterval(timer); }, 20);
+  });
+  $('#s3rs', root).addEventListener('click', () => { clearInterval(timer); st.F = 0; st.maxF = 0; Fs.value = 0; draw(); });
+  function calc() {
+    const k1 = +$('#ck1', root).value, k2 = +$('#ck2', root).value, f = +$('#cF', root).value;
+    if (!(k1 > 0 && k2 > 0)) return;
+    const ks = 1 / (1 / k1 + 1 / k2), kp = k1 + k2;
+    $('#cks', root).innerHTML = ks.toPrecision(3) + ' N m<sup>−1</sup>';
+    $('#cxs', root).textContent = (f / ks * 100).toPrecision(3) + ' cm';
+    $('#ckp', root).innerHTML = kp.toPrecision(3) + ' N m<sup>−1</sup>';
+    $('#cxp', root).textContent = (f / kp * 100).toPrecision(3) + ' cm';
+  }
+  ['ck1', 'ck2', 'cF'].forEach(id => $('#' + id, root).addEventListener('input', calc));
+  Fs.max = st.p.Fmax; draw(); calc();
+};
+</script>
+<script>
+/* ---------------- Simulation 4: pressure in a liquid ---------------- */
+sims.t4 = function (root) {
+  const LIQ = { water: ['Water', 1000], sea: ['Sea water', 1030], oil: ['Oil', 800], hg: ['Mercury', 13600] };
+  const st = { l: 'water', h: 3, atm: false };
+  root.innerHTML = `<div class="sim"><div class="controls">
+    <label>Liquid<select id="s4l"><option value="water">Water (1000 kg/m³)</option><option value="sea">Sea water (1030 kg/m³)</option><option value="oil">Oil (800 kg/m³)</option><option value="hg">Mercury (13 600 kg/m³)</option></select></label>
+    <label><span class="lr"><span>Depth h below the surface</span><output id="s4ho"></output></span><input type="range" id="s4h" min="0" max="10" step="0.1" value="3"></label>
+    <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="s4a"> Include atmospheric pressure (1.01 × 10⁵ Pa)</label>
+    <div class="readouts">${ro('Liquid pressure ρgh', 'r4l')}${ro('Atmosphere', 'r4a')}${ro('Total pressure p', 'r4t')}${ro('Force on 1.0 m² panel', 'r4f')}</div>
+    <div class="try"><b>Try this</b><ul><li>Double the depth in water. What happens to p?</li><li>At 5.0 m, compare water with mercury. Predict the ratio first.</li><li>Tick the atmosphere box. Which part of p does depth change?</li></ul></div>
+  </div><div class="stage"><div class="two"><svg id="s4tank" viewBox="0 0 320 340" role="img" aria-label="Tank of liquid with a pressure probe at a chosen depth"></svg><svg id="s4gr" viewBox="0 0 360 300" role="img" aria-label="Graph of pressure against depth"></svg></div></div></div>`;
+  const rho = () => LIQ[st.l][1];
+  function draw() {
+    const pl = rho() * G * st.h, pa = st.atm ? PATM : 0, pt = pl + pa, S = 28, top = 40, py = top + st.h * S, cx = 160;
+    let g = `<rect x="60" y="${top}" width="200" height="${10 * S}" style="fill:var(--liquid);fill-opacity:.4"/>`;
+    g += `<polyline points="60,${top - 14} 60,${top + 10 * S} 260,${top + 10 * S} 260,${top - 14}" style="fill:none;stroke:var(--ink);stroke-width:2.5"/>`;
+    g += `<line x1="60" y1="${top}" x2="260" y2="${top}" style="stroke:var(--liquid);stroke-width:2.5"/>`;
+    for (let m = 0; m <= 10; m += 2) g += `<line x1="260" y1="${top + m * S}" x2="268" y2="${top + m * S}" style="stroke:var(--ink-2)"/><text x="272" y="${top + m * S + 4}">${m} m</text>`;
+    if (st.atm) for (const x of [100, 160, 220]) g += arrow(x, top - 34, x, top - 4, 'var(--ink-2)', 2);
+    if (st.atm) g += `<text x="160" y="14" text-anchor="middle">atmosphere</text>`;
+    g += `<line x1="40" y1="${top}" x2="40" y2="${py}" style="stroke:var(--accent);stroke-width:1.5"/><text class="ac" x="36" y="${(top + py) / 2 + 4}" text-anchor="end">h</text>`;
+    const len = 14 + 40 * (1 - Math.exp(-pt / 2e5)), c = 'var(--force)';
+    g += arrow(cx + 7, py, cx + 7 + len, py, c, 2.5) + arrow(cx - 7, py, cx - 7 - len, py, c, 2.5) + arrow(cx, py + 7, cx, py + 7 + len, c, 2.5) + arrow(cx, py - 7, cx, py - 7 - len, c, 2.5);
+    g += `<circle cx="${cx}" cy="${py}" r="6" style="fill:var(--ink)"/>`;
+    g += `<text x="160" y="332" text-anchor="middle">arrow length is schematic: p acts equally in all directions</text>`;
+    $('#s4tank', root).innerHTML = g;
+    // graph
+    const l = 50, r = 14, t = 14, b = 44, W = 360 - l - r, H = 300 - t - b;
+    const p10 = rho() * G * 10 + pa, YM = p10 * 1.05 / 1000, XM = 10;
+    const X = v => l + v / XM * W, Y = v => t + H - v / YM * H;
+    let q = '';
+    for (let v = 0; v <= 10; v += 2) q += `<line x1="${X(v)}" y1="${t}" x2="${X(v)}" y2="${t + H}" style="stroke:var(--grid)"/><text x="${X(v)}" y="${t + H + 15}" text-anchor="middle">${v}</text>`;
+    const sy = niceStep(YM);
+    for (let v = 0; v <= YM; v += sy) q += `<line x1="${l}" y1="${Y(v)}" x2="${l + W}" y2="${Y(v)}" style="stroke:var(--grid)"/><text x="${l - 7}" y="${Y(v) + 4}" text-anchor="end">${+v.toFixed(1)}</text>`;
+    q += `<line x1="${l}" y1="${t}" x2="${l}" y2="${t + H}" style="stroke:var(--ink-2)"/><line x1="${l}" y1="${t + H}" x2="${l + W}" y2="${t + H}" style="stroke:var(--ink-2)"/>`;
+    q += `<text class="tk" x="${l + W / 2}" y="${t + H + 36}" text-anchor="middle">Depth h / m</text>`;
+    q += `<text class="tk" transform="translate(13 ${t + H / 2}) rotate(-90)" text-anchor="middle">Pressure p / kPa</text>`;
+    q += `<line x1="${X(0)}" y1="${Y(pa / 1000)}" x2="${X(10)}" y2="${Y(p10 / 1000)}" style="stroke:var(--accent);stroke-width:2.5"/>`;
+    q += `<circle cx="${X(st.h)}" cy="${Y(pt / 1000)}" r="6" style="fill:var(--force);stroke:var(--surface);stroke-width:2"/>`;
+    $('#s4gr', root).innerHTML = q;
+    $('#s4ho', root).textContent = st.h.toFixed(1) + ' m';
+    $('#r4l', root).textContent = fmtP(pl);
+    $('#r4a', root).textContent = st.atm ? fmtP(PATM) : 'not included';
+    $('#r4t', root).textContent = fmtP(pt);
+    $('#r4f', root).textContent = (pt / 1000).toPrecision(3) + ' kN';
+  }
+  $('#s4l', root).addEventListener('change', e => { st.l = e.target.value; draw(); });
+  $('#s4h', root).addEventListener('input', e => { st.h = +e.target.value; draw(); });
+  $('#s4a', root).addEventListener('change', e => { st.atm = e.target.checked; draw(); });
+  draw();
+};
+
+/* ---------------- Simulation 5: calculating pressure ---------------- */
+sims.t5 = function (root) {
+  const st = { a: 20, b: 10, c: 5, m: 2.0, face: 'ab' };
+  root.innerHTML = `<div class="sim"><div class="controls">
+    <label><span class="lr"><span>Length a</span><output id="s5ao"></output></span><input type="range" id="s5a" min="10" max="40" step="1" value="20"></label>
+    <label><span class="lr"><span>Width b</span><output id="s5bo"></output></span><input type="range" id="s5b" min="5" max="25" step="1" value="10"></label>
+    <label><span class="lr"><span>Thickness c</span><output id="s5co"></output></span><input type="range" id="s5c" min="3" max="15" step="1" value="5"></label>
+    <label><span class="lr"><span>Mass m</span><output id="s5mo"></output></span><input type="range" id="s5m" min="0.5" max="10" step="0.1" value="2"></label>
+    <label>Resting face<select id="s5f"><option value="ab">Face a × b</option><option value="ac">Face a × c</option><option value="bc">Face b × c</option></select></label>
+    <div class="readouts">${ro('Weight W = mg', 'r5w')}${ro('Contact area A', 'r5a')}${ro('Pressure p', 'r5p')}</div>
+    <div class="ro"><span>Working</span><b id="r5k" style="font-size:.82rem"></b></div>
+    <div class="try"><b>Try this</b><ul><li>Rotate the brick onto each face and read p.</li><li>Double the mass at a fixed face. What happens to p?</li><li>Find dimensions that give p below 500 Pa.</li></ul></div>
+  </div><div class="stage"><svg id="s5br" viewBox="0 0 360 290" role="img" aria-label="Brick resting on a surface"></svg><svg id="s5bar" viewBox="0 0 360 150" role="img" aria-label="Pressure on each face of the brick"></svg></div></div>`;
+  const faces = () => ({
+    ab: { w: st.a, d: st.b, h: st.c, name: 'a × b' },
+    ac: { w: st.a, d: st.c, h: st.b, name: 'a × c' },
+    bc: { w: st.b, d: st.c, h: st.a, name: 'b × c' }
+  });
+  function draw() {
+    const F = faces(), f = F[st.face], W = st.m * G, sc = 4.5, cx = 180, gy = 220;
+    const w = f.w * sc, h = f.h * sc, x0 = cx - w / 2;
+    let g = `<rect x="20" y="${gy}" width="320" height="26" style="fill:var(--surface-2)"/><line x1="20" y1="${gy}" x2="340" y2="${gy}" style="stroke:var(--ink);stroke-width:2"/>`;
+    g += `<rect x="${x0}" y="${gy - h}" width="${w}" height="${h}" rx="2" style="fill:var(--accent);fill-opacity:.35;stroke:var(--accent);stroke-width:2"/>`;
+    g += `<text class="tk" x="${cx}" y="${gy - h / 2 + 4}" text-anchor="middle">m = ${st.m.toFixed(1)} kg</text>`;
+    g += arrow(cx, gy - h - 50, cx, gy - h - 2, 'var(--force)') + `<text class="fc" x="${cx + 10}" y="${gy - h - 28}">W = ${W.toFixed(1)} N</text>`;
+    const n = Math.max(3, Math.min(8, Math.round(w / 28)));
+    for (let i = 0; i < n; i++) { const x = x0 + w * (i + 0.5) / n; g += arrow(x, gy + 22, x, gy + 3, 'var(--ink-2)', 2); }
+    g += `<text x="${cx}" y="${gy + 40}" text-anchor="middle">contact width ${f.w} cm, depth ${f.d} cm → A = ${f.name}</text>`;
+    $('#s5br', root).innerHTML = g;
+    const A = f.w * f.d / 1e4, p = W / A;
+    $('#r5w', root).textContent = W.toFixed(1) + ' N';
+    $('#r5a', root).innerHTML = A.toPrecision(3) + ' m²';
+    $('#r5p', root).textContent = fmtP(p);
+    $('#r5k', root).innerHTML = `p = W ÷ A = ${W.toFixed(1)} ÷ ${A.toPrecision(3)} = ${sci(p)} Pa`;
+    ['a', 'b', 'c'].forEach(k => $('#s5' + k + 'o', root).textContent = st[k] + ' cm');
+    $('#s5mo', root).textContent = st.m.toFixed(1) + ' kg';
+    // bars
+    const ps = Object.keys(F).map(k => ({ k, name: F[k].name, p: W / (F[k].w * F[k].d / 1e4) }));
+    const mx = Math.max(...ps.map(o => o.p)) * 1.25;
+    let q = '';
+    ps.forEach((o, i) => {
+      const y = 14 + i * 42, bw = o.p / mx * 230, on = o.k === st.face;
+      q += `<text class="tk" x="8" y="${y + 18}">${o.name}</text><rect x="64" y="${y}" width="${bw}" height="26" rx="2" style="fill:${on ? 'var(--accent)' : 'var(--ink-2)'};fill-opacity:${on ? 1 : .4}"/>`;
+      q += `<text x="${Math.min(70 + bw, 300)}" y="${y + 18}" class="tk">${fmtP(o.p)}</text>`;
+    });
+    $('#s5bar', root).innerHTML = q;
+  }
+  const bind = (id, key, num = true) => $('#' + id, root).addEventListener('input', e => { st[key] = num ? +e.target.value : e.target.value; draw(); });
+  bind('s5a', 'a'); bind('s5b', 'b'); bind('s5c', 'c'); bind('s5m', 'm');
+  $('#s5f', root).addEventListener('change', e => { st.face = e.target.value; draw(); });
+  draw();
+};
+
+/* ---------------- Application shell ---------------- */
+let progress = {};
+try { progress = JSON.parse(localStorage.getItem('fml-progress') || '{}') || {}; } catch (e) { progress = {}; }
+function saveProgress() { try { localStorage.setItem('fml-progress', JSON.stringify(progress)); } catch (e) { } }
+const view = { t: 0, tab: 'learn' };
+const simCache = {};
+
+function topicScore(t) { return t.q.filter(q => progress[q.id]).length; }
+function updateScores() {
+  let tot = 0;
+  TOPICS.forEach((t, i) => { const s = topicScore(t); tot += s; const el = $('#nc' + i); if (el) el.textContent = s + '/5'; });
+  $('#ovScore').textContent = tot + ' / 25';
+  $('#ovBar').style.width = (tot / 25 * 100) + '%';
+  const qs = $('#qs'); if (qs) qs.textContent = topicScore(TOPICS[view.t]) + ' / 5 correct';
+}
+function renderNav() {
+  $('#nav').innerHTML = TOPICS.map((t, i) => `<button data-i="${i}" ${i === view.t ? 'aria-current="true"' : ''}><span class="n">${i + 1}</span><span>${t.short}</span><span class="c" id="nc${i}"></span></button>`).join('');
+  $('#nav').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { view.t = +b.dataset.i; view.tab = 'learn'; render(); $('#main').scrollIntoView({ block: 'start' }); }));
+}
+function qEl(t, q, i) {
+  const el = document.createElement('div');
+  el.className = 'q';
+  const marks = q.marks || 1;
+  let body = `<div class="qmeta">Question ${t.id.slice(1)}.${i + 1} · ${marks} mark${marks > 1 ? 's' : ''}</div><p class="qtext">${q.text}</p>`;
+  if (q.type === 'mcq') body += `<div class="opts">${q.opts.map((o, j) => `<button class="opt" data-j="${j}">${'ABCD'[j]}. ${o}</button>`).join('')}</div>`;
+  if (q.type === 'num') body += `<div class="numrow q-in"><input type="text" inputmode="decimal" id="in-${q.id}" aria-label="Your answer" autocomplete="off"><span class="u">${q.unit}</span><button class="btn primary chk">Check</button></div>`;
+  if (q.type === 'open') body += `<textarea id="in-${q.id}" aria-label="Your answer" placeholder="Write your answer here, then compare with the model answer."></textarea>`;
+  body += `<p class="fb" aria-live="polite"></p><div class="btnrow"><button class="btn show">${q.type === 'open' ? 'Show model answer' : 'Show working'}</button></div><div class="why" hidden></div>`;
+  el.innerHTML = body;
+  const fb = $('.fb', el), why = $('.why', el);
+  const done = () => { progress[q.id] = 1; saveProgress(); updateScores(); };
+  const good = () => { fb.className = 'fb good'; fb.textContent = 'Correct.'; done(); };
+  if (progress[q.id] && q.type !== 'open') { fb.className = 'fb good'; fb.textContent = 'Answered correctly earlier.'; }
+  $('.show', el).addEventListener('click', () => {
+    why.hidden = !why.hidden;
+    if (q.type === 'open') {
+      why.innerHTML = `<p><b>Model answer</b></p>${q.model}<div class="btnrow" style="margin-top:10px"><button class="btn ok">I covered all the points</button><button class="btn no">Not yet</button></div>`;
+      $('.ok', why).addEventListener('click', () => { fb.className = 'fb good'; fb.textContent = 'Marked as covered.'; done(); });
+      $('.no', why).addEventListener('click', () => { fb.className = 'fb bad'; fb.textContent = 'Marked as not yet. Revise the notes and try again.'; delete progress[q.id]; saveProgress(); updateScores(); });
+    } else why.innerHTML = q.why;
+  });
+  if (q.type === 'mcq') el.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => {
+    const j = +b.dataset.j;
+    if (j === q.ans) { b.classList.add('ok'); el.querySelectorAll('.opt').forEach(o => o.disabled = true); good(); why.hidden = false; why.innerHTML = q.why; }
+    else { b.classList.add('no'); b.disabled = true; fb.className = 'fb bad'; fb.textContent = 'Not quite. Try another option or press Show working.'; }
+  }));
+  if (q.type === 'num') {
+    const check = () => {
+      const v = parseFloat($('input', el).value.replace(',', '.'));
+      if (isNaN(v)) { fb.className = 'fb bad'; fb.textContent = 'Enter a number.'; return; }
+      if (Math.abs(v - q.ans) <= q.tol * Math.abs(q.ans)) { good(); why.hidden = false; why.innerHTML = q.why; }
+      else { fb.className = 'fb bad'; fb.textContent = 'Not quite. Check units and rounding, or press Show working.'; }
+    };
+    $('.chk', el).addEventListener('click', check);
+    $('input', el).addEventListener('keydown', e => { if (e.key === 'Enter') check(); });
+  }
+  return el;
+}
+function render() {
+  const t = TOPICS[view.t], main = $('#main');
+  renderNav();
+  main.innerHTML = `<div class="t-head"><h2>${t.title}</h2><p class="syl">${t.syl}</p></div>
+    <div class="tabs" role="tablist">${[['learn', 'Material'], ['sim', 'Simulation'], ['ex', 'Exercises']].map(([k, n]) => `<button role="tab" data-k="${k}" aria-selected="${view.tab === k}">${n}</button>`).join('')}</div><div id="panel"></div>`;
+  main.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => { view.tab = b.dataset.k; render(); }));
+  const panel = $('#panel');
+  if (view.tab === 'learn') { panel.className = 'prose'; panel.innerHTML = t.learn; }
+  else if (view.tab === 'sim') {
+    if (!simCache[t.id]) { const d = document.createElement('div'); sims[t.id](d); simCache[t.id] = d; }
+    panel.appendChild(simCache[t.id]);
+  } else {
+    panel.innerHTML = `<div class="qhead"><p>Answer each question, then compare with the worked solution. Numerical answers are accepted within a small rounding tolerance. Use g = 9.81 N kg<sup>−1</sup>.</p><b class="score" id="qs"></b></div>`;
+    t.q.forEach((q, i) => panel.appendChild(qEl(t, q, i)));
+  }
+  updateScores();
+}
+if (window.innerWidth > 900) $('#eqs').open = true;
+render();
+</script>
+
+</body></html>
